@@ -1,10 +1,12 @@
-import express, { Application, Request, Response } from 'express';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import express, { Application, NextFunction, Request, Response } from 'express';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { connector } from 'swagger-routes-express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import { StatusCodes } from 'http-status-codes';
 import swaggerUI from 'swagger-ui-express';
 import cors from 'cors';
+import morgan from 'morgan';
 import { routes } from './routes';
 
 const Api = async (): Promise<Application> => {
@@ -16,6 +18,7 @@ const Api = async (): Promise<Application> => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+  app.use(morgan('tiny'));
 
   app.use(cors({
     origin: '*',
@@ -30,7 +33,7 @@ const Api = async (): Promise<Application> => {
     status: number;
     message: string;
     errors: unknown;
-  }, _req: Request, res: Response) => {
+  }, _req: Request, res: Response, _next: NextFunction) => {
 
     res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR).json({
       message: err.message,
