@@ -7,6 +7,11 @@ services:
       context: https://github.com/julekgwa/tuts-api.git#main
       dockerfile: Dockerfile
     environment:
+      - PORT=${PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DATABASE=${DATABASE}
+      - DB_HOST=${DB_HOST}
       - NODE_ENV=${NODE_ENV}
       - API_URL=${API_URL}
     ports:
