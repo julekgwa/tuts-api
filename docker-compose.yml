@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   app:
-    container_name: ${ENVIRONMENT}_app
+    container_name: ${NODE_ENV}_app
     build:
       context: https://github.com/julekgwa/tuts-api.git#main
       dockerfile: Dockerfile
@@ -13,21 +13,24 @@ services:
       - DATABASE=${DATABASE}
       - DB_HOST=${DB_HOST}
       - NODE_ENV=${NODE_ENV}
+      - DOMAIN=${DOMAIN}
       - API_URL=${API_URL}
     ports:
       - ${APP_PORT:-3000}:${PORT}
     deploy:
       replicas: 1
+
   nginx:
-    container_name: ${ENVIRONMENT}_nginx
+    container_name: ${NODE_ENV}_nginx
     image: nginx:latest
     environment:
-      - ENVIRONMENT=${ENVIRONMENT}
+      - NODE_ENV=${NODE_ENV}
       - APP_PORT=${APP_PORT}
+      - DOMAIN=${DOMAIN}
     ports:
       - "${NGINX_PORT:-80}:80"
     volumes:
       - ./nginx/nginx.template.conf:/etc/nginx/nginx.template.conf:ro
-    command: ["/bin/bash", "-c", "export ENVIRONMENT && export APP_PORT  && envsubst '$${ENVIRONMENT} $${APP_PORT}' < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
+    command: ["/bin/bash", "-c", "export NODE_ENV && export APP_PORT  && envsubst '$${NODE_ENV} $${APP_PORT} $${DOMAIN}' < /etc/nginx/nginx.template.conf > /etc/nginx/nginx.conf && nginx -g 'daemon off;'"]
     depends_on:
       - app
