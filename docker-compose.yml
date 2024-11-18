@@ -4,7 +4,7 @@ services:
   app:
     container_name: ${ENVIRONMENT}_app
     build:
-      context: .
+      context: https://github.com/julekgwa/tuts-api.git#main
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=${NODE_ENV}
