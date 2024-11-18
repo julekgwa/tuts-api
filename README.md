@@ -24,7 +24,14 @@ This is a simple and practical example of how to deploy a Node.js API to various
 
 3. Build and run the application using Docker Compose:
     ```sh
-    docker-compose up -d --build --force-recreate
+    docker-compose --env-file .env.dev up -d --build --force-recreate
+    ```
+
+    Deploy to other environments:
+    ```sh
+    docker-compose --env-file .env.staging up -d --build --force-recreate
+    docker-compose --env-file .env.qa up -d --build --force-recreate
+    docker-compose --env-file .env.production up -d --build --force-recreate
     ```
 
 4. Access the API documentation at `http://${NODE_ENV}.localhost/api/v1/api-docs`. # Replace `${NODE_ENV}` with the value of the `NODE_ENV` environment variable.
@@ -35,7 +42,7 @@ The API documentation is available in the [app/swagger/swagger.yml](app/swagger/
 
 ## Nginx Configuration template and explanation
 
-The NGINX configuration template is available in the [nginx/nginx.conf](nginx/nginx.conf) file. It is a simple configuration that listens on port 80 and proxies requests to the Node.js application.
+The NGINX configuration template is available in the [nginx/nginx.template.conf](nginx/nginx.template.conf) file. It is a simple configuration that listens on port 80 and proxies requests to the Node.js application.
 
 ```nginx
 worker_processes auto;
@@ -75,6 +82,23 @@ http {
 - **location**: The location block defines how NGINX should handle requests to a specific URL.
 - **proxy_pass**: The URL that NGINX should proxy requests to.
 - **proxy_set_header**: Sets the headers that NGINX should pass to the backend server.
+
+## Update hosts file (Only if you're running this locally)
+
+Add the following entries to your hosts file:
+
+```sh
+sudo nano /etc/hosts
+```
+
+Add the following entries:
+
+```sh
+127.0.0.1 development.localhost
+127.0.0.1 staging.localhost
+127.0.0.1 qa.localhost
+127.0.0.1 production.localhost
+```
 
 ## Project Components
 
